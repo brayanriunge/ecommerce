@@ -54,7 +54,9 @@ export default function Navbar() {
                 </Link>
               </div>
               <div className="p-2">
-                <button className="bg-orange-600 p-2 rounded-lg">Login</button>
+                <button className="bg-orange-600  px-8 p-2 rounded-lg">
+                  Login
+                </button>
               </div>
             </div>
           ) : (
@@ -63,13 +65,13 @@ export default function Navbar() {
             </button>
           )}
           {!isAboveMediaScreens && isMenuToggled && (
-            <div className="right-0 bottom-0 fixed h-full w-[330px] shadow-xl">
-              <div className="flex justify-end">
+            <div className="right-0 bottom-0 fixed h-full bg-cyan-400  w-[330px] shadow-xl">
+              <div className="flex justify-end mt-4 ">
                 <button onClick={() => setIsMenuToggled(!isMenuToggled)}>
                   <HiOutlineX className="h-6 w-6" />
                 </button>
               </div>
-              <div className="flex flex-col gap-8 text-xl">
+              <div className="flex flex-col gap-8 text-xl items-center justify-content">
                 <Link legacyBehavior href={"/"}>
                   <a className="text-lg"> Home</a>
                 </Link>
@@ -88,6 +90,11 @@ export default function Navbar() {
                 <Link legacyBehavior href={"/aboutus"}>
                   <a className="text-lg">About us</a>
                 </Link>
+                <div className="p-2">
+                  <button className="bg-orange-600  px-8 p-2 rounded-lg">
+                    Login
+                  </button>
+                </div>
               </div>
             </div>
           )}
