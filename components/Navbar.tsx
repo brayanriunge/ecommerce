@@ -1,7 +1,8 @@
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/public/Logo.jpeg";
+import { HiMenu } from "react-icons/hi";
+import useMediaQuery from "@/hooks/useMediaQuery";
 
 export default function Navbar() {
   const flexBetween = "flex justify-between items-center";
@@ -16,27 +17,30 @@ export default function Navbar() {
           <Image
             src={Logo}
             alt="logo"
-            height={70}
-            width={20}
-            className="rounded-full"
+            height={20}
+            width={50}
+            className="rounded-full flex-start"
           />
           <h1 className="text-2xl bold text-blue">EpicStore</h1>
+          <div className={`${flexBetween} w-full`}>
+            <div className={`${flexBetween} text-lg gap-8`}>
+              <Link legacyBehavior href={"/"}>
+                <a className="text-lg"> Home</a>
+              </Link>
+              <Link legacyBehavior href={"/cart"}>
+                <a className="text-lg"> Cart</a>
+              </Link>
+            </div>
+          </div>
 
           {/* on the right */}
-          {isAboveMediaScreens ? (
-            <div className={`${flexBetween} w-full`}>
-              <div className={`${flexBetween} text-lg gap-8`}>
-                <Link legacyBehavior href={"/home"}>
-                  <a className="text-lg"> Home</a>
-                </Link>
-                <Link legacyBehavior href={"/cart"}>
-                  <a className="text-lg"> Cart</a>
-                </Link>
-              </div>
-            </div>
+          {/* {isAboveMediaScreens ? (
+           
           ) : (
-            <button></button>
-          )}
+            <button>
+              <HiMenu />
+            </button>
+          )} */}
         </div>
       </div>
     </div>
