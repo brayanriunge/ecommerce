@@ -1,10 +1,11 @@
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+
 export default function Navbar() {
+  const flexBetween = "flex justify-between items-center";
+  const isAboveMediumScreens = useMediaQuery("min-width: 720px");
   return (
-    <div className="flex z-30 bg-gray-50">
-      {/* on the left */}
-      <div></div>
-      {/* on the right */}
-      <div></div>
+    <div className={`${flexBetween} fixed top-0 py-6 z-30`}>
+      <div className={`${flexBetween} `}></div>
     </div>
   );
 }
