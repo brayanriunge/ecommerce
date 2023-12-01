@@ -3,6 +3,7 @@ import { useForm } from "react-hooks-useform";
 type FormValues = {
   name: string;
   description: string;
+  category: string;
   quantity: number;
 };
 
