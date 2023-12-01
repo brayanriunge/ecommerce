@@ -6,6 +6,7 @@ type FormValues = {
   category: string;
   quantity: number;
   price: number;
+  brand: string;
 };
 
 export default function Dashboard() {
@@ -40,6 +41,14 @@ export default function Dashboard() {
                 <input
                   type="category"
                   placeholder="category"
+                  required
+                  className="rounded-md px-6 py-5 focus:outline-none border-none"
+                />
+              </div>
+              <div className="flex border border-gray-400 relative rounded-md">
+                <input
+                  type="brand"
+                  placeholder="brand"
                   required
                   className="rounded-md px-6 py-5 focus:outline-none border-none"
                 />
