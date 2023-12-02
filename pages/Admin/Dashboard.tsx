@@ -1,6 +1,8 @@
+import Image from "next/image";
 import { stringify } from "querystring";
 import React, { useState } from "react";
 import { useForm } from "react-hooks-useform";
+import { MdCloudUpload } from "react-icons/md";
 
 type FormValues = {
   name: string;
@@ -107,14 +109,37 @@ export default function Dashboard() {
             </div>
             {/* image */}
             <div className="flex flex-col items-center p-5 mr-4">
-              <div className="flex justify-content-center border border-gray-400 relative rounded-md p-10">
-                <input
-                  type="image"
-                  placeholder="picture"
-                  required
-                  className="rounded-xl px-10 py-5 focus:outline-none w-5/6 border-dotted"
-                />
-              </div>
+              <label htmlFor="dropzone-file">
+                {selectedImage ? (
+                  <Image
+                    src={selectedImage}
+                    width={280}
+                    height={280}
+                    alt="selectedImage"
+                    className="text-gray-500"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-between pt-6 mt-5">
+                    <MdCloudUpload className="w-12 h-12 mb-4 text-gray-500" />
+                    <p className="mb-2 text-gray-500 text-sm">
+                      <span className="font-semi-bold">
+                        Click to select a file
+                      </span>{" "}
+                      or Drag and Drop
+                    </p>
+                  </div>
+                )}
+                <div className="flex justify-content-center border border-gray-400 relative rounded-md p-10">
+                  <input
+                    id="dropzone-file"
+                    type="file"
+                    placeholder="picture"
+                    required
+                    className="rounded-xl px-10 py-5 focus:outline-none w-5/6 border-dotted"
+                  />
+                </div>
+              </label>
+
               <button
                 className="rounded-xl px-6 py-2 bg-orange-400 mt-10 "
                 type="submit"
