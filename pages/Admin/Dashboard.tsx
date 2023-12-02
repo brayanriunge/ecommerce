@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { useForm } from "react-hooks-useform";
 
 type FormValues = {
@@ -10,6 +11,34 @@ type FormValues = {
 };
 
 export default function Dashboard() {
+  const [selectImage, setSelectedImage] = useState("");
+  const [selectFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  // event handler for file input change
+  const handleFileUploadChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (!event.target.files) return;
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedImage(URL.createObjectURL(file));
+      setSelectedFile(file);
+    }
+  };
+
+  //event handler for form submission
+  const handleFormSubmission = async (data: FormValues) => {
+    const { brand, category, description, name, price, quantity } = data;
+    const product = {
+      brand,
+      name,
+      quantity,
+      price,
+      category,
+      description,
+    };
+  };
   return (
     <div className="flex min-h-full bg-blue-400 gap-16 py-10 px-40 mb-0 md:h-full md:pb-20">
       <div className="bg-slate-50  mx-auto p-6 min-w-md m-16 w-full rounded-xl h-3/4 mb-20 mt-20 ">
