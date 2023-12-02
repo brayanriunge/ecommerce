@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { stringify } from "querystring";
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { useForm } from "react-hooks-useform";
 import { MdCloudUpload } from "react-icons/md";
 
@@ -31,7 +31,7 @@ export default function Dashboard() {
   };
 
   //event handler for form submission
-  const handleFormSubmission = async (data: FormValues) => {
+  const handleFormSubmission = async (data: FormValues, e: FormEvent) => {
     setIsUploading(true);
     const { brand, category, description, name, price, quantity } = data;
     const product = {
@@ -43,7 +43,7 @@ export default function Dashboard() {
       description,
     };
     //creating formData to send to the server
-    const formData = new FormData();
+    const formData = new FormData(e.target as HTMLFormElement);
     formData.append("product", JSON.stringify(product));
     if (selectedFile) formData.append("picture", selectedFile);
   };
