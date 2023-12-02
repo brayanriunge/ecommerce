@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { stringify } from "querystring";
 import React, { FormEvent, useState } from "react";
 import { useForm } from "react-hooks-useform";
@@ -17,6 +18,7 @@ export default function Dashboard() {
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const router = useRouter();
 
   // event handler for file input change
   const handleFileUploadChange = (
@@ -46,6 +48,23 @@ export default function Dashboard() {
     const formData = new FormData(e.target as HTMLFormElement);
     formData.append("product", JSON.stringify(product));
     if (selectedFile) formData.append("picture", selectedFile);
+
+    try {
+      const res = await fetch("localhost:3000/api/products/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        router.push("/");
+      } else {
+        throw new Error(`Http Error! ${res.status}`);
+      }
+    } catch (error) {
+      return console.log("Error", error);
+    }
   };
   return (
     <div className="flex min-h-full bg-blue-400 gap-16 py-10 px-40 mb-0 md:h-full md:pb-20">
