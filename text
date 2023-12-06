@@ -1,0 +1,111 @@
+// Import necessary modules and dependencies
+import type { NextApiRequest, NextApiResponse } from "next";
+import formidable from "formidable";
+import { prisma } from "@/utils/db"; // Assuming a database utility for Prisma
+import { authOptions } from "../auth/[...nextauth]";
+import { getServerSession } from "next-auth/next";
+
+// Define the expected response data structure
+interface Data {
+  message: string;
+}
+
+// Configuration for the API endpoint
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+// Utility function to parse form data using Formidable
+const getFormData = async (
+  req: NextApiRequest
+): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
+  const options: formidable.Options = {};
+  options.maxFileSize = 4000 * 1024 * 1024; // Set maximum file size to 4GB
+  const form = formidable(options);
+
+  return new Promise<{ fields: formidable.Fields; files: formidable.Files }>(
+    (resolve, reject) => {
+      form.parse(req, (err, fields, files) => {
+        if (err) {
+          reject(err);
+        } else {
+          // Access the fields under the "product" key and parse as JSON
+          const productFields = JSON.parse(fields.product[0]);
+          resolve({ fields: productFields, files });
+        }
+      });
+    }
+  );
+};
+
+// Main API handler function
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<Data>
+) {
+  // Check if the HTTP method is POST, return Method Not Allowed if not
+  if (req.method !== "POST")
+    return res.status(405).json({ message: "Method Not Allowed" });
+
+  // Retrieve user session using NextAuth
+  const session = await getServerSession(req, res, authOptions);
+
+  // Return Unauthorized if user is not logged in
+  if (!session)
+    return res.status(401).json({ message: "User must be logged in" });
+
+  // Retrieve user information from the database using Prisma
+  const user = await prisma.user.findUnique({
+    where: {
+      email: session.user?.email as string,
+    },
+  });
+
+  // Return Not Found if user not found
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  try {
+    // Parse form data using the utility function
+    const { fields, files } = await getFormData(req);
+
+    // Access the uploaded file from the parsed files
+    const myFiles = files.picture as formidable.File[];
+    const file = myFiles[0];
+
+    // Convert the file content to Buffer for database storage
+    const fileContent = await new Promise<Buffer>((resolve, reject) => {
+      const chunks: Buffer[] = [];
+      file.on("data", (chunk) => chunks.push(chunk));
+      file.on("end", () => resolve(Buffer.concat(chunks)));
+      file.on("error", (error) => reject(error));
+    });
+
+    // Create a new product in the database using Prisma
+    const newProduct = await prisma.product.create({
+      data: {
+        name: fields.name as string,
+        brand: fields.brand as string,
+        category: fields.category as string,
+        price: parseInt(fields.price as string),
+        quantity: parseInt(fields.quantity as string),
+        description: fields.description as string,
+        image: fileContent, // Store the image content in the database
+        userId: user.id,
+      },
+    });
+
+    // Return Internal Server Error if product creation fails
+    if (!newProduct) {
+      return res.status(500).json({ message: "Product upload failed" });
+    } else {
+      // Return Created if product creation is successful
+      return res.status(201).json({ message: "Product created successfully" });
+    }
+  } catch (error) {
+    // Log and return Internal Server Error for any other errors
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
