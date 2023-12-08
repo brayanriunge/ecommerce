@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@types/formidable": "^3.4.5",
+    "cloudinary": "^1.41.0",
     "formidable": "^3.5.1",
     "next": "14.0.3",
     "react": "^18",
